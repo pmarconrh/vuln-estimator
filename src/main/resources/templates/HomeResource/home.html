@@ -1,0 +1,93 @@
+{#include base}
+{#title}Home - SecureScope AI{/title}
+
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <span class="badge bg-light text-dark bg-opacity-75 mb-3 px-3 py-2 rounded-pill">
+          <i class="bi bi-stars text-primary"></i> Code vulnerability assessment, estimated in seconds
+        </span>
+        <h1 class="display-6 mb-3">Know the cost before you commit.</h1>
+        <p class="lead mb-4">
+          Upload your Java, Python, or JavaScript project as one or more ZIP files and get an
+          instant, no-obligation cost estimate for a full code vulnerability assessment.
+        </p>
+        <a href="/upload" class="btn btn-light btn-lg-cta d-inline-flex align-items-center gap-2">
+          <i class="bi bi-cloud-arrow-up-fill text-primary"></i>
+          <span class="text-dark fw-semibold">Start a new assessment</span>
+        </a>
+
+        <div class="hero-stats">
+          <div>
+            <div class="stat-value">{requests.size}</div>
+            <div class="stat-label">Requests on file</div>
+          </div>
+          <div>
+            <div class="stat-value">Java / Python / JS</div>
+            <div class="stat-label">Supported stacks</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 fw-bold mb-0">Your submitted requests</h2>
+    <a href="/upload" class="btn btn-outline-primary btn-sm rounded-pill px-3 d-inline-flex align-items-center gap-1">
+      <i class="bi bi-plus-lg"></i> New assessment
+    </a>
+  </div>
+
+  <div class="surface-card p-0 overflow-hidden">
+    {#if requests.isEmpty}
+    <div class="empty-state">
+      <i class="bi bi-inbox"></i>
+      <p class="mb-1 fw-semibold">No requests yet</p>
+      <p class="small mb-0">Upload your first ZIP file to get a cost estimate.</p>
+    </div>
+    {#else}
+    <div class="table-responsive">
+      <table class="table requests-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th class="ps-4">Reference</th>
+            <th>Files</th>
+            <th>Submitted</th>
+            <th>Completed</th>
+            <th>Estimated cost</th>
+            <th class="pe-4">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#for request in requests}
+          <tr>
+            <td class="ps-4">
+              <a href="/orders/{request.referenceId}" class="ref-badge text-decoration-none">{request.referenceId}</a>
+            </td>
+            <td>
+              <span class="text-body">{request.fileCount} file(s)</span>
+              <div class="small text-muted text-truncate" style="max-width: 260px;" title="{request.fileNamesSummary}">
+                {request.fileNamesSummary}
+              </div>
+            </td>
+            <td class="small">{request.submissionDateFormatted}</td>
+            <td class="small">{request.completionDateFormatted}</td>
+            <td class="fw-semibold">${request.estimatedCost}</td>
+            <td class="pe-4">
+              <span class="status-pill bg-{request.status.badgeClass}-subtle text-{request.status.badgeClass}-emphasis border border-{request.status.badgeClass}-subtle">
+                {request.status.label}
+              </span>
+            </td>
+          </tr>
+          {/for}
+        </tbody>
+      </table>
+    </div>
+    {/if}
+  </div>
+</div>
+
+{/include}

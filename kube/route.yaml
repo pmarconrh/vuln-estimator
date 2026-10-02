@@ -1,0 +1,18 @@
+# OpenShift-only. On vanilla Kubernetes, use an Ingress against the
+# `securescope-ai` Service instead (not included here, since its shape
+# depends on your Ingress controller).
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: securescope-ai
+  labels:
+    app.kubernetes.io/name: securescope-ai
+spec:
+  to:
+    kind: Service
+    name: securescope-ai
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

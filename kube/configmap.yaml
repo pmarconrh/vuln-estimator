@@ -1,0 +1,22 @@
+# Non-secret application configuration, mapped to env vars following
+# Quarkus/SmallRye Config's standard convention (dots/dashes -> underscores,
+# uppercased). See README.md "Configuration reference" for the matching
+# application.properties keys and what each one does.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: securescope-ai-config
+  labels:
+    app.kubernetes.io/name: securescope-ai
+data:
+  # Base URL of the real external ai-scanner service the background pollers
+  # talk to. Point this at your own instance.
+  APP_AI_SCANNER_URL: "http://ai-scanner.ai-scanner.svc.cluster.local:3000"
+
+  # Scan Profile sent with every POST /api/scan/{id} (see GET /api/profiles
+  # on the ai-scanner instance for the names it actually has configured).
+  APP_AI_SCANNER_PROFILE: "security"
+
+  # How often each background poller runs.
+  APP_POLLING_SUBMITTED_INTERVAL: "15s"
+  APP_POLLING_IN_PROGRESS_INTERVAL_SECONDS: "20"

@@ -1,0 +1,21 @@
+# Persistent storage for uploaded ZIP files and the H2 database file
+# (mounted at /deployments/data in the container - see Dockerfile and
+# deployment.yaml). ReadWriteOnce is enough since this app is designed to
+# run as a single replica (local H2 file database, see README "Known
+# limitations").
+#
+# storageClassName is deliberately omitted so the cluster's default
+# StorageClass is used; set one explicitly if your cluster has none, or if
+# you want a specific class (e.g. a particular access/performance tier).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: securescope-ai-data
+  labels:
+    app.kubernetes.io/name: securescope-ai
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

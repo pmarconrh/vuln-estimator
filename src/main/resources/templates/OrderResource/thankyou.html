@@ -1,0 +1,37 @@
+{#include base}
+{#title}Request confirmed - SecureScope AI{/title}
+
+<div class="confirm-wrapper">
+  <div class="container text-center" style="max-width: 620px;">
+    <div class="confirm-icon">
+      <i class="bi bi-check-lg"></i>
+    </div>
+    <h1 class="h2 fw-bold mb-3">Thank you! Your request is in.</h1>
+    <p class="text-muted mb-1">
+      Reference <span class="ref-badge">{request.referenceId}</span>
+    </p>
+    <p class="lead text-muted mb-4">
+      One of our security specialists will review your submission and contact you as soon as
+      possible to schedule the full code vulnerability assessment.
+    </p>
+
+    <div class="surface-card d-inline-block text-start p-4 mb-4">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <i class="bi bi-file-earmark-zip text-primary"></i>
+        <span class="fw-semibold">{request.fileCount} file(s) submitted</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-cash-coin text-primary"></i>
+        <span class="fw-semibold">Estimated cost: ${request.estimatedCost}</span>
+      </div>
+    </div>
+
+    <div>
+      <a href="/" class="btn btn-primary btn-lg-cta d-inline-flex align-items-center gap-2">
+        <i class="bi bi-house-door-fill"></i> Return to home
+      </a>
+    </div>
+  </div>
+</div>
+
+{/include}

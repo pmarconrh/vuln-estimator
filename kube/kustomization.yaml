@@ -1,0 +1,18 @@
+# Apply everything with:
+#   kubectl apply -k kube/        (vanilla Kubernetes - drop route.yaml first, or
+#                                   `kubectl apply -k kube/ --prune -l ...` style setups)
+#   oc apply -k kube/             (OpenShift - includes the Route)
+#
+# Remember to edit kube/secret.yaml (real token/passwords/encryption key)
+# and the image reference in kube/deployment.yaml before applying anywhere
+# beyond a personal sandbox namespace.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - configmap.yaml
+  - secret.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+  - route.yaml

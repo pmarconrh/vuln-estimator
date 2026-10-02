@@ -1,0 +1,61 @@
+{#include base}
+{#title}Review your estimate - SecureScope AI{/title}
+
+<div class="container py-5" style="max-width: 780px;">
+  <div class="text-center mb-4">
+    <span class="badge bg-primary-subtle text-primary-emphasis px-3 py-2 rounded-pill mb-3">
+      <i class="bi bi-2-circle-fill"></i> Step 2 of 2
+    </span>
+    <h1 class="h3 fw-bold mb-2">Here's your estimate</h1>
+    <p class="text-muted mb-0">Reference <span class="ref-badge">{request.referenceId}</span></p>
+  </div>
+
+  <div class="estimate-callout text-center mb-4">
+    <div class="small text-uppercase mb-1" style="letter-spacing:.06em; opacity:.85;">Estimated assessment cost</div>
+    <div class="estimate-value">${request.estimatedCost}</div>
+    <div class="small mt-2" style="opacity:.85;">
+      Final pricing will be confirmed by our team after a detailed review. This is an automated,
+      no-obligation estimate.
+    </div>
+  </div>
+
+  <div class="surface-card p-4 p-md-5">
+    <h2 class="h6 fw-bold text-uppercase text-muted mb-3" style="letter-spacing:.04em;">
+      Files submitted for review
+    </h2>
+    <ul class="list-unstyled mb-4">
+      {#for file in request.files}
+      <li class="d-flex align-items-center gap-2 py-2 border-bottom">
+        <i class="bi bi-file-earmark-zip text-primary"></i>
+        <span class="flex-grow-1">{file.originalFileName}</span>
+      </li>
+      {/for}
+    </ul>
+
+    <p class="text-muted small mb-4">
+      <i class="bi bi-info-circle"></i>
+      Ready to move forward? Confirm below and our team will reach out to schedule the full
+      vulnerability assessment. Changed your mind? You can cancel and we'll delete your uploaded
+      files right away.
+    </p>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <form action="/orders/{request.referenceId}/confirm" method="post">
+          <button type="submit" class="btn btn-proceed btn-lg-cta w-100 d-flex align-items-center justify-content-center gap-2">
+            <i class="bi bi-check-circle-fill"></i> Proceed with the order
+          </button>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <form action="/orders/{request.referenceId}/cancel" method="post">
+          <button type="submit" class="btn btn-cancel-danger btn-lg-cta w-100 d-flex align-items-center justify-content-center gap-2">
+            <i class="bi bi-trash3"></i> Do not proceed &amp; delete uploads
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{/include}

@@ -1,0 +1,81 @@
+# Single replica by design: the app uses a local file-based H2 database and
+# local disk for uploads (see README "Known limitations"), both on a
+# ReadWriteOnce PVC, so it cannot be safely scaled horizontally as-is.
+# strategy: Recreate avoids two pods ever trying to mount that RWO volume
+# at the same time during a rollout.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: securescope-ai
+  labels:
+    app.kubernetes.io/name: securescope-ai
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: securescope-ai
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: securescope-ai
+    spec:
+      # Lets the mounted PVC be group-writable regardless of which UID the
+      # cluster assigns the container (OpenShift assigns an arbitrary UID
+      # with gid 0 by default; the image's /deployments/data is already
+      # group-writable for gid 0 - see Dockerfile).
+      securityContext:
+        fsGroup: 0
+      containers:
+        - name: securescope-ai
+          # Replace with wherever you pushed the image built from the
+          # Dockerfile at the repository root, e.g.:
+          #   podman build -t quay.io/your-org/securescope-ai:latest .
+          #   podman push quay.io/your-org/securescope-ai:latest
+          image: quay.io/your-org/securescope-ai:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: securescope-ai-config
+            - secretRef:
+                name: securescope-ai-secrets
+          volumeMounts:
+            - name: data
+              mountPath: /deployments/data
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "384Mi"
+            limits:
+              cpu: "1"
+              memory: "768Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: securescope-ai-data
