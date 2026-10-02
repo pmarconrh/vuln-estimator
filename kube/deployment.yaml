@@ -21,19 +21,13 @@ spec:
       labels:
         app.kubernetes.io/name: securescope-ai
     spec:
-      # Lets the mounted PVC be group-writable regardless of which UID the
-      # cluster assigns the container (OpenShift assigns an arbitrary UID
-      # with gid 0 by default; the image's /deployments/data is already
-      # group-writable for gid 0 - see Dockerfile).
-      securityContext:
-        fsGroup: 0
       containers:
         - name: securescope-ai
           # Replace with wherever you pushed the image built from the
           # Dockerfile at the repository root, e.g.:
           #   podman build -t quay.io/your-org/securescope-ai:latest .
           #   podman push quay.io/your-org/securescope-ai:latest
-          image: quay.io/your-org/securescope-ai:latest
+          image: image-registry.openshift-image-registry.svc:5000/secure-scope-ai/secure-scope-ai:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -68,13 +62,6 @@ spec:
             limits:
               cpu: "1"
               memory: "768Mi"
-          securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            capabilities:
-              drop: ["ALL"]
-            seccompProfile:
-              type: RuntimeDefault
       volumes:
         - name: data
           persistentVolumeClaim:
